@@ -1,0 +1,63 @@
+import React , {useEffect, useState, useParams} from "react";
+
+import { confirmAlert } from "react-confirm-alert";
+
+import axios from 'axios';
+import Modal from "react-modal"
+import { CookiesProvider, useCookies } from "react-cookie";
+
+const MainScreen1 = () => {
+    const submit = () => {
+        confirmAlert({
+          title: "Confirm to submit",
+          message: "Are you sure to do this.",
+          buttons: [
+            {
+              label: "Yes",
+              onClick: () => alert("Click Yes")
+            },
+            {
+              label: "No",
+              onClick: () => alert("Click No")
+            }
+          ]
+        });
+      };
+    const [cookies, setCookie] = useCookies(["user"]);
+
+    setCookie("user", "mark", { path: "/" });
+    console.log(cookies);
+
+
+    const [data, setData] = useState([{}]);
+    const queryParameters = new URLSearchParams(window.location.search)
+  const type = queryParameters.get("type")
+  const name = queryParameters.get("name")
+  axios.post('/get_settings', {
+    "user": 'mark',
+    "password": '12345678'
+  })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+    useEffect(() => {
+        fetch("/members?type=" + type + "&name="+ name).then(
+            res => res.json()
+        ).then(
+            data => {
+                setData(data)
+                console.log(data)
+            }
+        )
+    })
+  return (
+    <div>
+      <button onClick={submit}>Confirm dialog</button>
+    </div>)
+};
+export default MainScreen1;
+
